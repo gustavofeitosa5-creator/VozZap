@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Send } from "lucide-react";
+import { Globe2, Loader2, Send, ShieldCheck, Users } from "lucide-react";
 import { useVozZap } from "@/hooks/useVozZap";
 import { useApp } from "@/contexts/AppContext";
 import {
@@ -17,11 +17,17 @@ import {
 } from "@/components/ui/card";
 import type { PostVisibility } from "@/types";
 
-const VISIBILITY_OPTIONS: { value: PostVisibility; label: string; emoji: string }[] = [
-  { value: "public", label: "Público", emoji: "🌐" },
-  { value: "friends_only", label: "Apenas amigos", emoji: "👥" },
-  { value: "close_friends", label: "Melhores amigos", emoji: "💚" },
+const VISIBILITY_OPTIONS: { value: PostVisibility; label: string }[] = [
+  { value: "public", label: "Público" },
+  { value: "friends_only", label: "Apenas amigos" },
+  { value: "close_friends", label: "Melhores amigos" },
 ];
+
+const visibilityIcons = {
+  public: <Globe2 className="h-5 w-5" />,
+  friends_only: <Users className="h-5 w-5" />,
+  close_friends: <ShieldCheck className="h-5 w-5" />,
+};
 
 export function NewPost() {
   const { uploadAudio, createPost } = useVozZap();
@@ -144,7 +150,9 @@ export function NewPost() {
                       onChange={() => {}}
                       className="h-4 w-4"
                     />
-                    <span className="text-lg">{option.emoji}</span>
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      {visibilityIcons[option.value]}
+                    </span>
                     <span className="font-medium">{option.label}</span>
                   </button>
                 ))}

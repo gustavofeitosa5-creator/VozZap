@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Mic, Square, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AudioPlayer } from "@/components/audio/AudioPlayer";
 import { useApp } from "@/contexts/AppContext";
 import { formatDuration } from "@/lib/utils";
 
@@ -103,42 +104,46 @@ export function AudioUploader({ value, onChange }: AudioUploaderProps) {
 
   if (value) {
     return (
-      <div className="space-y-3 rounded-lg border border-border bg-accent/40 p-4">
-        <audio src={value.url} controls className="w-full" />
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>Duração: {formatDuration(value.duration)}</span>
+      <div className="space-y-4 rounded-lg border border-border bg-card/80 p-4 shadow-sm">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold">Pré-visualização de áudio</p>
+            <p className="text-xs text-muted-foreground">
+              {value.ext.toUpperCase()} • {formatDuration(value.duration)}
+            </p>
+          </div>
+
           <Button type="button" variant="ghost" size="sm" onClick={clear}>
             <Trash2 className="h-4 w-4" /> Remover
           </Button>
         </div>
+
+        <AudioPlayer src={value.url} duration={value.duration} />
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-border p-8">
+    <div className="space-y-4">
+      <div className="flex flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-border bg-card/70 p-8 text-center shadow-sm">
         {recording ? (
           <>
             <div className="flex items-center gap-2 text-destructive">
               <span className="h-3 w-3 animate-pulse rounded-full bg-destructive" />
               <span className="font-mono text-lg">{formatDuration(elapsed)}</span>
             </div>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={stopRecording}
-            >
+            <Button type="button" variant="destructive" onClick={stopRecording}>
               <Square className="h-4 w-4" /> Parar gravação
             </Button>
           </>
         ) : (
           <>
-            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/15 text-primary">
-              <Mic className="h-7 w-7" />
-            </span>
-            <p className="text-sm text-muted-foreground">
-              Grave um áudio ou envie um arquivo
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Mic className="h-8 w-8" />
+            </div>
+            <p className="text-sm font-semibold">Grave um áudio ou envie um arquivo</p>
+            <p className="text-xs text-muted-foreground">
+              Use o botão abaixo para selecionar um arquivo de áudio.
             </p>
             <Button type="button" onClick={startRecording}>
               <Mic className="h-4 w-4" /> Gravar
