@@ -21,6 +21,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem("vozzap-theme") as "light" | "dark" | null;
+    const preferredTheme = savedTheme ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    setTheme(preferredTheme);
+    document.documentElement.classList.toggle("dark", preferredTheme === "dark");
+  }, []);
+
   const dismissToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
     const tm = timers.current[id];
@@ -95,6 +102,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const toggleTheme = useCallback(() => {
     setTheme((prev) => {
       const next = prev === "light" ? "dark" : "light";
+      window.localStorage.setItem("vozzap-theme", next);
       document.documentElement.classList.toggle("dark", next === "dark");
       return next;
     });
